@@ -1,0 +1,5 @@
+Source,Destination,Type
+internal.utterancesofageek.com,DestDomainFQDN,Domain
+uoag,DestDomainNetBIOS,Domain
+\\internal.utterancesofageek.com\,DestDomainFQDNUNC,UNC
+\\uoag\,DestDomainNetBIOSUNC,UNC
