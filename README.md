@@ -48,4 +48,5 @@ Exmaple usage
   `.\Deploy-LAPS.ps1 -GPOName "My Awesome LAPS GPO"`
   	    This will run the script with defaults but set the GPOname to "My Awesome LAPS GPO"
    
+  # Currently this is not working with the migration table. The solution would be to generate your own migration table from the GPO backup or comment out the migrationtable parameter from import-gpo at the bottom of the script.
    
