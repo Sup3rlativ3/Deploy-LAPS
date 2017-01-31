@@ -133,5 +133,5 @@ $Output | Export-CSV .\MigrationMap.csv -NoTypeInformation
         
  
 #Import the actual GPO            
-Import-GPO -CreateIfNeeded -path $env:homedrive\Shadow\LAPS\ -BackupId "{4178CB42-3A58-445C-A46E-9CD8338C9FA5}" -TargetName $GPOName #-MigrationTable $env:homedrive\Shadow\LAPS\MigrationTable.migtable
+Import-GPO -CreateIfNeeded -path $env:homedrive\Shadow\LAPS\ -BackupId "{4178CB42-3A58-445C-A46E-9CD8338C9FA5}" -TargetName $GPOName -MigrationTable $env:homedrive\Shadow\LAPS\MigrationMap.csv
     
