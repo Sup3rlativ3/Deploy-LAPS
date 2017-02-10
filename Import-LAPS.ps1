@@ -1,5 +1,5 @@
 #Requires -Version 3 -RunAsAdministrator
-#Requires -Modules AdmPwd.PS, ActiveDirectory, GroupPolicy
+#Requires -Modules ActiveDirectory, GroupPolicy
 
 [CmdletBinding()]
 param ([string[]]$ComputerOU,
