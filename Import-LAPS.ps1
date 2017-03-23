@@ -104,28 +104,24 @@ Set-Location -Path $WorkFolderPath
 Import-Module -Name GroupPolicy
 Import-Module -Name ActiveDirectory
 
-# Change variables in the GPO to suit environment using a GPO migration table.
-$XML = [xml](Get-Content -Path (Join-Path -Path $WorkFolderPath -ChildPath 'MigrationTable.migtable'))
-$Destination = $XML.MigrationTable.Mapping.ChildNodes
-
-foreach ($node in $Destination)
-{
-	if ($node.'#text' -eq 'ENTERPRISEADMINS')
-	{
-		$Node.innertext = "Enterprise Admins@$FQDN"
-	}
-	if ($node.'#text' -eq 'DOMAINADMINS')
-	{
-		$Node.innertext = "Domain Admins@$FQDN"
-	}
-	if ($node.'#text' -like '\\SERVERNAME\*')
-	{
-		$Node.innertext = Join-Path -Path (Join-Path -Path (Join-Path -Path '\\' -ChildPath $env:computername) -ChildPath $SMBShareName) -ChildPath $DistributiveFileName
-	}
-}
-
-$MigrationTableProcessedFilePath = Join-Path -Path $WorkFolderPath -ChildPath 'LAPS.migtable'
-$XML.Save($MigrationTableProcessedFilePath)
+# Change variables in the GPO to suit environment by recursing through the directory and reading each file then changing the values to suit the current environment
+$GPOPath = Get-ChildItem "$env:homedrive\Shadow\LAPS\'{4178CB42-3A58-445C-A46E-9CD8338C9FA5}'" -recurse
+foreach ($File in $GPOPath)
+    {
+    (Get-Content $File.PSPath) |
+    Foreach-Object { $_ -replace "internal.utterancesofageek.com", "$FQDN" } |
+    Set-Content $file.PSPath
+    Foreach-Object { $_ -replace "UOAG", "$NetBIOSName" } |
+    Set-Content $file.PSPath
+    Foreach-Object { $_ -replace "ENTERPRISEADMINS", "Enterprise Admins@$FQDN" } |
+    Set-Content $file.PSPath
+    Foreach-Object { $_ -replace "DOMAINADMINS", "Domain Admins@$FQDN" } |
+    Set-Content $file.PSPath
+    Foreach-Object { $_ -replace "DC01", "$env:computername" } |
+    Set-Content $file.PSPath
+    Foreach-Object { $_ -replace "Skynet", "$env:computername" } |
+    Set-Content $file.PSPath
+    }
 
 #Import the actual GPO            
 #http://serverfault.com/questions/491505/powershell-copy-gpo-failing-with-hresult-0x8007000d
