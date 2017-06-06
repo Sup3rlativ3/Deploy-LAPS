@@ -20,6 +20,14 @@ param ([string[]]$ComputerOU,
 $NetBIOSName = (Get-ADDomain).NetBIOSName
 $FQDN = (Get-ADDomain).DNSRoot
 
+# https://blogs.msdn.microsoft.com/powershell/2007/06/19/get-scriptdirectory-to-the-rescue/
+function Get-ScriptDirectory
+{
+  $Invocation = (Get-Variable MyInvocation -Scope 1).Value
+  Split-Path $Invocation.MyCommand.Path
+}
+
+$DownloadFolder = (Get-ScriptDirectory)
 
 IF (!(Test-Path -Path $WorkFolderPath))
 {
@@ -34,7 +42,7 @@ New-SmbShare -Name $SMBShareName -Path $WorkFolderPath -ReadAccess "$NetBIOSName
 
 IF (Test-Path -Path $WorkFolderPath)
 {
-	Copy-Item -Path .\ -Destination $WorkFolderPath -Recurse
+	Copy-Item -Path $DownloadFolder  -Destination $WorkFolderPath -Recurse
 }
 
 
@@ -104,25 +112,16 @@ Set-Location -Path $WorkFolderPath
 Import-Module -Name GroupPolicy
 Import-Module -Name ActiveDirectory
 
-# Change variables in the GPO to suit environment by recursing through the directory and reading each file then changing the values to suit the current environment
-$GPOPath = Get-ChildItem "$env:homedrive\Shadow\LAPS\'{4178CB42-3A58-445C-A46E-9CD8338C9FA5}'" -recurse
-foreach ($File in $GPOPath)
-    {
-    (Get-Content $File.PSPath) |
-    Foreach-Object { $_ -replace "internal.utterancesofageek.com", "$FQDN" } |
-    Set-Content $file.PSPath
-    Foreach-Object { $_ -replace "UOAG", "$NetBIOSName" } |
-    Set-Content $file.PSPath
-    Foreach-Object { $_ -replace "ENTERPRISEADMINS", "Enterprise Admins@$FQDN" } |
-    Set-Content $file.PSPath
-    Foreach-Object { $_ -replace "DOMAINADMINS", "Domain Admins@$FQDN" } |
-    Set-Content $file.PSPath
-    Foreach-Object { $_ -replace "DC01", "$env:computername" } |
-    Set-Content $file.PSPath
-    Foreach-Object { $_ -replace "Skynet", "$env:computername" } |
-    Set-Content $file.PSPath
-    }
+# Change variables in the GPO migration table to suit environment by recursing through the migration table and then changing the values to suit the current environment.
+$MigrationTable =  "$WorkFolderPath\$GPOName\Migration.migtable"
+(Get-Content $MigrationTable).replace("FQDN", "$FQDN") | Set-Content $MigrationTable
+(Get-Content $MigrationTable).replace("NETBIOS", "$NetBIOSName") | Set-Content $MigrationTable
+(Get-Content $MigrationTable).replace("DOMAINCONTROLLER", "$env:computername") | Set-Content $MigrationTable
+(Get-Content $MigrationTable).replace("COMPUTER", "$env:computername") | Set-Content $MigrationTable
+(Get-Content $MigrationTable).replace("ADMIN", "$env:username") | Set-Content $MigrationTable
+(Get-Content $MigrationTable).replace("\\UNCPATH", "\\$env:computername") | Set-Content $MigrationTable
+
+
 
 #Import the actual GPO            
-#http://serverfault.com/questions/491505/powershell-copy-gpo-failing-with-hresult-0x8007000d
-Import-GPO -CreateIfNeeded -path $WorkFolderPath -BackupId '{68EB3D1B-EF9C-48BC-825A-948047FCD22D}' -TargetName $GPOName
+Import-GPO -CreateIfNeeded -path "$WorkFolderPath\Deploy-Laps" -BackupId '{68EB3D1B-EF9C-48BC-825A-948047FCD22D}' -TargetName $GPOName -MigrationTable "$WorkFolderPath\Deploy-LAPS\migration.migtable"
