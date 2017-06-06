@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-16"?>
+<MigrationTable xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.microsoft.com/GroupPolicy/GPOOperations/MigrationTable">
+  <Mapping>
+    <Type>Unknown</Type>
+    <Source>UOAG</Source>
+    <Destination>BOGANMEDICAL</Destination>
+  </Mapping>
+  <Mapping>
+    <Type>Unknown</Type>
+    <Source>internal.utterancesofageek.com</Source>
+    <Destination>Internal.BoganMedical.com.au</Destination>
+  </Mapping>
+  <Mapping>
+    <Type>Unknown</Type>
+    <Source>SKYNET</Source>
+    <Destination>BSMC-NYN-DC01</Destination>
+  </Mapping>
+  <Mapping>
+    <Type>GlobalGroup</Type>
+    <Source>DomainAdmins</Source>
+    <Destination>DOMAINadministratorS</Destination>
+  </Mapping>
+  <Mapping>
+    <Type>GlobalGroup</Type>
+    <Source>EnterpriseAdmins</Source>
+    <Destination>ENTERPRISEadministratorS</Destination>
+  </Mapping>
+  <Mapping>
+    <Type>Computer</Type>
+    <Source>DC01</Source>
+    <Destination>BSMC-NYN-DC01</Destination>
+  </Mapping>
+  <Mapping>
+    <Type>User</Type>
+    <Source>sup3rlativ3</Source>
+    <Destination>administrator</Destination>
+  </Mapping>
+  <Mapping>
+    <Type>UNCPath</Type>
+    <Source>\\SKYNET\laps$</Source>
+    <Destination>\\BSMC-NYN-DC01\laps$</Destination>
+  </Mapping>
+</MigrationTable>
