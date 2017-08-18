@@ -1,5 +1,6 @@
 Deploy-LAPS
 =================
+![Powershell v4+](https://img.shields.io/badge/Powershell-v4-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)  [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/sup3rlativ3/deploy-laps/issues)
 
 This script and accompanying files will allow system administrators to automatically deploy Microsoft Local Administrator Password Solution (LAPS). Please visit https://technet.microsoft.com/en-us/mt227395.aspx for more information about LAPS.
 
